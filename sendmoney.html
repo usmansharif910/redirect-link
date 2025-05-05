@@ -6,14 +6,10 @@
   <script>
     // Extract all query parameters from the URL
     const params = new URLSearchParams(window.location.search);
-    const queryArray = [];
-
-    for (const [key, value] of params.entries()) {
-      queryArray.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
-    }
+    params.set("source", "web_redirect"); // Add a flag to identify source
 
     // Construct the deep link with parameters
-    const deepLink = `businessmowa://SendWithdrawMoney?${queryArray.join("&")}`;
+    const deepLink = `businessmowa://SendWithdrawMoney?${params.toString()}`;
 
     // Redirect to the app via deep link
     window.location.href = deepLink;
