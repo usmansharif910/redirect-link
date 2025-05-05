@@ -3,9 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <title>Opening App...</title>
-  <meta http-equiv="refresh" content="0; url=businessmowa://SendWithdrawMoney?amount=1&user_id=96" />
+  <script>
+    // Extract all query parameters from the URL
+    const params = new URLSearchParams(window.location.search);
+    const queryArray = [];
+
+    for (const [key, value] of params.entries()) {
+      queryArray.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+    }
+
+    // Construct the deep link with parameters
+    const deepLink = `businessmowa://SendWithdrawMoney?${queryArray.join("&")}`;
+
+    // Redirect to the app via deep link
+    window.location.href = deepLink;
+
+    // Show fallback link if app doesn't open
+    setTimeout(() => {
+      document.getElementById("fallback").style.display = "block";
+      document.getElementById("fallback-link").href = deepLink;
+    }, 2000);
+  </script>
 </head>
 <body>
-  <p>If you're not redirected, <a href="businessmowa://SendWithdrawMoney?amount=1&user_id=96">click here</a>.</p>
+  <p>Opening the app...</p>
+  <div id="fallback" style="display: none;">
+    <p>If you're not redirected, <a id="fallback-link" href="#">click here</a>.</p>
+  </div>
 </body>
 </html>
