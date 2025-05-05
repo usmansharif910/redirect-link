@@ -4,21 +4,34 @@
   <meta charset="UTF-8" />
   <title>Opening App...</title>
   <script>
-    // Extract all query parameters from the URL
     const params = new URLSearchParams(window.location.search);
-    params.set("source", "web_redirect"); // Add a flag to identify source
+    params.set("source", "web_redirect");
 
-    // Construct the deep link with parameters
-    const deepLink = `businessmowa://SendWithdrawMoney?${params.toString()}`;
+    const baseSchemes = [
+      "businessmowa://SendWithdrawMoney?",
+      "employeemowa://SendWithdrawMoney?",
+      "mowa://SendWithdrawMoney?"
+    ];
 
-    // Redirect to the app via deep link
-    window.location.href = deepLink;
+    let attempt = 0;
+    const deepLink = () => `${baseSchemes[attempt]}${params.toString()}`;
 
-    // Show fallback link if app doesn't open
-    setTimeout(() => {
-      document.getElementById("fallback").style.display = "block";
-      document.getElementById("fallback-link").href = deepLink;
-    }, 2000);
+    function tryOpenApp() {
+      if (attempt >= baseSchemes.length) {
+        document.getElementById("fallback").style.display = "block";
+        document.getElementById("fallback-link").href = deepLink();
+        return;
+      }
+
+      window.location.href = deepLink();
+
+      setTimeout(() => {
+        attempt++;
+        tryOpenApp(); // try next fallback
+      }, 2000);
+    }
+
+    window.onload = tryOpenApp;
   </script>
 </head>
 <body>
